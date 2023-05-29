@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todotable/component/main_add.dart';
 import 'package:todotable/component/main_list.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,14 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // void createNewTodo() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return const MainAdd();
-  //     },
-  //   );
-  // }
+  void createNewTodo() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const MainAdd();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
