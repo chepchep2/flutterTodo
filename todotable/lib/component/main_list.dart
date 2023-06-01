@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todotable/component/main_header.dart';
 
 class MainList extends StatefulWidget {
   const MainList({super.key});
@@ -8,6 +9,8 @@ class MainList extends StatefulWidget {
 }
 
 class _MainListState extends State<MainList> {
+  DateTime todayDate = DateTime.now();
+
   bool? isChecked1 = false;
   bool? isChecked2 = false;
   bool? isChecked3 = false;
@@ -16,8 +19,10 @@ class _MainListState extends State<MainList> {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        const Text("6월 1일 목요일"),
-        const Text("오늘의 투두"),
+        MainHeader(
+          todayDate: todayDate,
+          count: 0,
+        ),
         Row(
           children: [
             Checkbox(
