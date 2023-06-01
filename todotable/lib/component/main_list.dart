@@ -1,0 +1,72 @@
+import 'package:flutter/material.dart';
+
+class MainList extends StatefulWidget {
+  const MainList({super.key});
+
+  @override
+  State<MainList> createState() => _MainListState();
+}
+
+class _MainListState extends State<MainList> {
+  bool? isChecked1 = false;
+  bool? isChecked2 = false;
+  bool? isChecked3 = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        const Text("6월 1일 목요일"),
+        const Text("오늘의 투두"),
+        Row(
+          children: [
+            Checkbox(
+              fillColor: const MaterialStatePropertyAll(Colors.black),
+              value: isChecked1,
+              onChanged: (value) {
+                setState(
+                  () {
+                    isChecked1 = value;
+                  },
+                );
+              },
+            ),
+            const Text("투두 타이틀"),
+          ],
+        ),
+        Row(
+          children: [
+            Checkbox(
+              fillColor: const MaterialStatePropertyAll(Colors.black),
+              value: isChecked2,
+              onChanged: (value) {
+                setState(
+                  () {
+                    isChecked2 = value;
+                  },
+                );
+              },
+            ),
+            const Text("투두 타이틀"),
+          ],
+        ),
+        Row(
+          children: [
+            Checkbox(
+              fillColor: const MaterialStatePropertyAll(Colors.black),
+              value: isChecked3,
+              onChanged: (value) {
+                setState(
+                  () {
+                    isChecked3 = value;
+                  },
+                );
+              },
+            ),
+            const Text("투두 타이틀"),
+          ],
+        ),
+      ],
+    );
+  }
+}
