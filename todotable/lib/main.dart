@@ -3,8 +3,6 @@ import 'package:todotable/screen/home_screen.dart';
 
 void main() {
   runApp(
-    const MaterialApp(
-      home: HomeScreen(),
-    ),
+    const MaterialApp(home: HomeScreen()),
   );
 }
