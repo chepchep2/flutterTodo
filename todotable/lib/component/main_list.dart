@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todotable/component/main_bottom.dart';
 import 'package:todotable/component/main_header.dart';
 
 class MainList extends StatefulWidget {
@@ -9,7 +8,23 @@ class MainList extends StatefulWidget {
   State<MainList> createState() => _MainListState();
 }
 
+class Todo {
+  final String title;
+  final String description;
+
+  Todo({required this.title, required this.description});
+}
+
 class _MainListState extends State<MainList> {
+  final _textController = TextEditingController();
+
+  void _handleSubmitted(String text) {
+    print(text);
+  }
+
+  String title = "";
+  String description = "";
+  List<String> todos = [];
   List<String> todoList = ["투두 타이틀0", "투두 타이틀1", "투두 타이틀2"];
   List<String> descriptionList = ["투두 설명을 추가할 수 있습니다"];
 
@@ -66,7 +81,33 @@ class _MainListState extends State<MainList> {
                     ),
                   ],
                 ),
-                const MainBottom(),
+                const SizedBox(
+                  height: 30,
+                ),
+                // const MainBottom(),
+                Container(
+                  child: Row(
+                    children: [
+                      Container(
+                        child: IconButton(
+                            onPressed: () => todos.add(title),
+                            icon: const Icon(Icons.add)),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _textController,
+                          onChanged: (value) {
+                            setState(() {
+                              title = value;
+                            });
+                          },
+                          decoration:
+                              const InputDecoration(hintText: "새로운 투두 추가하기"),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           );
