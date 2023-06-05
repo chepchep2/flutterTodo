@@ -53,22 +53,6 @@ class _MainListState extends State<MainList> {
           const SizedBox(
             height: 10,
           ),
-          Row(
-            children: [
-              Container(
-                child: IconButton(
-                  onPressed: () => _handleSubmitted(),
-                  icon: const Icon(Icons.add),
-                ),
-              ),
-              Expanded(
-                child: TextField(
-                  controller: _textController,
-                  decoration: const InputDecoration(hintText: "새로운 투두 추가하기"),
-                ),
-              ),
-            ],
-          ),
           const SizedBox(height: 30),
           Expanded(
             child: ListView.builder(
@@ -124,6 +108,26 @@ class _MainListState extends State<MainList> {
               },
             ),
           ),
+          Row(
+            children: [
+              Container(
+                child: IconButton(
+                  onPressed: () => _handleSubmitted(),
+                  icon: const Icon(Icons.add),
+                ),
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _textController,
+                  decoration: const InputDecoration(
+                      hintText: "새로운 투두 추가하기",
+                      enabledBorder:
+                          OutlineInputBorder(borderSide: BorderSide.none)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
         ],
       ),
     );
