@@ -56,15 +56,25 @@ class _MainListState extends State<MainList> {
           const SizedBox(height: 30),
           Expanded(
             child: ListView.builder(
-              itemCount: todos.length + 2,
+              itemCount: todos.length,
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return const SizedBox.shrink();
-                } else if (index == 1) {
-                  return const SizedBox.shrink();
-                } else {
-                  final todo = todos[index - 2];
-                  return Column(
+                final todo = todos[index];
+                return Dismissible(
+                  key: Key(todo),
+                  onDismissed: (direction) {
+                    setState(() {
+                      todos.removeAt(index);
+                    });
+                  },
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -72,8 +82,7 @@ class _MainListState extends State<MainList> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Checkbox(
-                            fillColor:
-                                const MaterialStatePropertyAll(Colors.black),
+                            fillColor: MaterialStatePropertyAll(Colors.black),
                             value: isChecked,
                             onChanged: (value) {
                               setState(() {
@@ -103,8 +112,8 @@ class _MainListState extends State<MainList> {
                       ),
                       const SizedBox(height: 30),
                     ],
-                  );
-                }
+                  ),
+                );
               },
             ),
           ),
@@ -120,9 +129,10 @@ class _MainListState extends State<MainList> {
                 child: TextField(
                   controller: _textController,
                   decoration: const InputDecoration(
-                      hintText: "새로운 투두 추가하기",
-                      enabledBorder:
-                          OutlineInputBorder(borderSide: BorderSide.none)),
+                    hintText: "새로운 투두 추가하기",
+                    enabledBorder:
+                        OutlineInputBorder(borderSide: BorderSide.none),
+                  ),
                 ),
               ),
             ],
