@@ -15,19 +15,19 @@ class MainList extends StatefulWidget {
 
 class _MainListState extends State<MainList> {
   List<String> todos = [];
+  List<bool> checkedList = [];
   final _textController = TextEditingController();
 
   void _handleSubmitted() {
     setState(() {
       String newTodo = _textController.text;
       todos.add(newTodo);
+      checkedList.add(false);
       _textController.clear();
     });
   }
 
   DateTime todayDate = DateTime.now();
-
-  bool? isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +64,11 @@ class _MainListState extends State<MainList> {
                   onDismissed: (direction) {
                     setState(() {
                       todos.removeAt(index);
+                      checkedList.removeAt(index);
                     });
                   },
                   background: Container(
                     color: Colors.red,
-                    alignment: Alignment.centerRight,
                     child: const Icon(
                       Icons.delete,
                       color: Colors.white,
@@ -82,11 +82,12 @@ class _MainListState extends State<MainList> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Checkbox(
-                            fillColor: MaterialStatePropertyAll(Colors.black),
-                            value: isChecked,
+                            fillColor:
+                                const MaterialStatePropertyAll(Colors.black),
+                            value: checkedList[index],
                             onChanged: (value) {
                               setState(() {
-                                isChecked = value;
+                                checkedList[index] = value!;
                               });
                             },
                           ),
@@ -95,7 +96,11 @@ class _MainListState extends State<MainList> {
                             children: [
                               Text(
                                 todo,
-                                style: const TextStyle(fontSize: 15),
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    decoration: checkedList[index]
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none),
                               ),
                               const SizedBox(height: 5),
                               Text(
@@ -106,7 +111,9 @@ class _MainListState extends State<MainList> {
                           ),
                           const Text(
                             "08:32",
-                            style: TextStyle(fontSize: 12),
+                            style: TextStyle(
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
