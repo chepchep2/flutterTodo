@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MainList extends StatefulWidget {
   final DateTime? todayDate;
@@ -16,6 +17,7 @@ class MainList extends StatefulWidget {
 class _MainListState extends State<MainList> {
   List<String> todos = [];
   List<bool> checkedList = [];
+  List<DateTime> addedTimes = [];
   final _textController = TextEditingController();
 
   void _handleSubmitted() {
@@ -23,6 +25,7 @@ class _MainListState extends State<MainList> {
       String newTodo = _textController.text;
       todos.add(newTodo);
       checkedList.add(false);
+      addedTimes.add(DateTime.now());
       _textController.clear();
     });
   }
@@ -59,12 +62,15 @@ class _MainListState extends State<MainList> {
               itemCount: todos.length,
               itemBuilder: (context, index) {
                 final todo = todos[index];
+                final addedTime = addedTimes[index];
+                final formattedTime = DateFormat.Hm().format(addedTime);
                 return Dismissible(
                   key: Key(todo),
                   onDismissed: (direction) {
                     setState(() {
                       todos.removeAt(index);
                       checkedList.removeAt(index);
+                      addedTimes.removeAt(index);
                     });
                   },
                   background: Container(
@@ -109,9 +115,9 @@ class _MainListState extends State<MainList> {
                               ),
                             ],
                           ),
-                          const Text(
-                            "08:32",
-                            style: TextStyle(
+                          Text(
+                            formattedTime,
+                            style: const TextStyle(
                               fontSize: 12,
                             ),
                           ),
