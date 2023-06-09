@@ -1,37 +1,36 @@
-// import 'dart:io';
+import 'package:todotable/model/todos.dart';
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+import 'dart:io';
 
-// import 'package:drift/drift.dart';
-// import 'package:todotable/model/lists.dart';
+part 'drift_database.g.dart';
 
-// import 'package:drift/native.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:path/path.dart' as p;
+@DriftDatabase(
+  tables: [
+    Todos,
+  ],
+)
+class LocalDatabase extends _$LocalDatabase {
+  LocalDatabase() : super(_openConnection());
 
-// part 'drift_database.g.dart';
+  Stream<List<Todo>> watchTodos(DateTime date) =>
+      (select(todos)..where((tbl) => tbl.date.equals(date))).watch();
 
-// @DriftDatabase(
-//   tables: [
-//     Lists,
-//   ],
-// )
-// class LocalDatabase extends _$LocalDatabase {
-//   LocalDatabase() : super(_openConnection());
-//   Stream<List<List>> watchLists(DateTime date) =>
-//       (select(lists)..where((tbl) => tbl.date.equals(date))).watch();
+  Future<int> createTodo(TodosCompanion data) => into(todos).insert(data);
 
-//   Future<int> createList(ListsCompanion data) => into(lists).insert(data);
+  Future<int> removeTodos(int id) =>
+      (delete(todos)..where((tbl) => tbl.id.equals(id))).go();
 
-//   Future<int> removeList(int id) =>
-//       (delete(lists)..where((tbl) => tbl.id.equals(id))).go();
+  @override
+  int get schemaVersion => 1;
+}
 
-//   @override
-//   int get schemaVersion => 1;
-// }
-
-// LazyDatabase _openConnection() {
-//   return LazyDatabase(() async {
-//     final dbFolder = await getApplicationDocumentsDirectory();
-//     final file = File(p.join(dbFolder.path, 'db.sqlite'));
-//     return NativeDatabase(file);
-//   });
-// }
+LazyDatabase _openConnection() {
+  return LazyDatabase(() async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+    return NativeDatabase(file);
+  });
+}
