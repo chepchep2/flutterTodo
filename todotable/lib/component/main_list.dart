@@ -17,6 +17,7 @@ class MainList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(123);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -94,7 +95,7 @@ class MainList extends StatelessWidget {
                     ),
                     child: const TextField(
                       decoration: InputDecoration(
-                        hintText: "투두 추가",
+                        hintText: "투두 추가ddddddd",
                         border: InputBorder.none,
                       ),
                     ),
@@ -107,4 +108,9 @@ class MainList extends StatelessWidget {
       ),
     );
   }
+}
+
+int hamsoo(int a) {
+  print("abc");
+  return a;
 }
