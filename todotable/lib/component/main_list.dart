@@ -4,9 +4,13 @@ import 'package:intl/intl.dart';
 class MainList extends StatefulWidget {
   final DateTime? todayDate;
   final int? count;
+  final FormFieldSetter<String>? onSaved;
+  final FormFieldValidator<String>? validator;
   const MainList({
     @required this.todayDate,
     @required this.count,
+    @required this.onSaved,
+    @required this.validator,
     Key? key,
   }) : super(key: key);
 
