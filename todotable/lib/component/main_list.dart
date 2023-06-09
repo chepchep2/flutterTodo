@@ -18,6 +18,7 @@ class MainList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(123);
+    print("test");
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
