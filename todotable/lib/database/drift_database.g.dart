@@ -7,43 +7,48 @@ part of 'drift_database.dart';
 // **************************************************************************
 
 // ignore_for_file: type=lint
-class Todo extends DataClass implements Insertable<Todo> {
+class Schedule extends DataClass implements Insertable<Schedule> {
   final int id;
-  final String todo;
+  final String content;
   final DateTime date;
-  final DateTime time;
-  const Todo(
+  final int startTime;
+  final int endTime;
+  const Schedule(
       {required this.id,
-      required this.todo,
+      required this.content,
       required this.date,
-      required this.time});
+      required this.startTime,
+      required this.endTime});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['todo'] = Variable<String>(todo);
+    map['content'] = Variable<String>(content);
     map['date'] = Variable<DateTime>(date);
-    map['time'] = Variable<DateTime>(time);
+    map['start_time'] = Variable<int>(startTime);
+    map['end_time'] = Variable<int>(endTime);
     return map;
   }
 
-  TodosCompanion toCompanion(bool nullToAbsent) {
-    return TodosCompanion(
+  SchedulesCompanion toCompanion(bool nullToAbsent) {
+    return SchedulesCompanion(
       id: Value(id),
-      todo: Value(todo),
+      content: Value(content),
       date: Value(date),
-      time: Value(time),
+      startTime: Value(startTime),
+      endTime: Value(endTime),
     );
   }
 
-  factory Todo.fromJson(Map<String, dynamic> json,
+  factory Schedule.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Todo(
+    return Schedule(
       id: serializer.fromJson<int>(json['id']),
-      todo: serializer.fromJson<String>(json['todo']),
+      content: serializer.fromJson<String>(json['content']),
       date: serializer.fromJson<DateTime>(json['date']),
-      time: serializer.fromJson<DateTime>(json['time']),
+      startTime: serializer.fromJson<int>(json['startTime']),
+      endTime: serializer.fromJson<int>(json['endTime']),
     );
   }
   @override
@@ -51,85 +56,102 @@ class Todo extends DataClass implements Insertable<Todo> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'todo': serializer.toJson<String>(todo),
+      'content': serializer.toJson<String>(content),
       'date': serializer.toJson<DateTime>(date),
-      'time': serializer.toJson<DateTime>(time),
+      'startTime': serializer.toJson<int>(startTime),
+      'endTime': serializer.toJson<int>(endTime),
     };
   }
 
-  Todo copyWith({int? id, String? todo, DateTime? date, DateTime? time}) =>
-      Todo(
+  Schedule copyWith(
+          {int? id,
+          String? content,
+          DateTime? date,
+          int? startTime,
+          int? endTime}) =>
+      Schedule(
         id: id ?? this.id,
-        todo: todo ?? this.todo,
+        content: content ?? this.content,
         date: date ?? this.date,
-        time: time ?? this.time,
+        startTime: startTime ?? this.startTime,
+        endTime: endTime ?? this.endTime,
       );
   @override
   String toString() {
-    return (StringBuffer('Todo(')
+    return (StringBuffer('Schedule(')
           ..write('id: $id, ')
-          ..write('todo: $todo, ')
+          ..write('content: $content, ')
           ..write('date: $date, ')
-          ..write('time: $time')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, todo, date, time);
+  int get hashCode => Object.hash(id, content, date, startTime, endTime);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Todo &&
+      (other is Schedule &&
           other.id == this.id &&
-          other.todo == this.todo &&
+          other.content == this.content &&
           other.date == this.date &&
-          other.time == this.time);
+          other.startTime == this.startTime &&
+          other.endTime == this.endTime);
 }
 
-class TodosCompanion extends UpdateCompanion<Todo> {
+class SchedulesCompanion extends UpdateCompanion<Schedule> {
   final Value<int> id;
-  final Value<String> todo;
+  final Value<String> content;
   final Value<DateTime> date;
-  final Value<DateTime> time;
-  const TodosCompanion({
+  final Value<int> startTime;
+  final Value<int> endTime;
+  const SchedulesCompanion({
     this.id = const Value.absent(),
-    this.todo = const Value.absent(),
+    this.content = const Value.absent(),
     this.date = const Value.absent(),
-    this.time = const Value.absent(),
+    this.startTime = const Value.absent(),
+    this.endTime = const Value.absent(),
   });
-  TodosCompanion.insert({
+  SchedulesCompanion.insert({
     this.id = const Value.absent(),
-    required String todo,
+    required String content,
     required DateTime date,
-    required DateTime time,
-  })  : todo = Value(todo),
+    required int startTime,
+    required int endTime,
+  })  : content = Value(content),
         date = Value(date),
-        time = Value(time);
-  static Insertable<Todo> custom({
+        startTime = Value(startTime),
+        endTime = Value(endTime);
+  static Insertable<Schedule> custom({
     Expression<int>? id,
-    Expression<String>? todo,
+    Expression<String>? content,
     Expression<DateTime>? date,
-    Expression<DateTime>? time,
+    Expression<int>? startTime,
+    Expression<int>? endTime,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (todo != null) 'todo': todo,
+      if (content != null) 'content': content,
       if (date != null) 'date': date,
-      if (time != null) 'time': time,
+      if (startTime != null) 'start_time': startTime,
+      if (endTime != null) 'end_time': endTime,
     });
   }
 
-  TodosCompanion copyWith(
+  SchedulesCompanion copyWith(
       {Value<int>? id,
-      Value<String>? todo,
+      Value<String>? content,
       Value<DateTime>? date,
-      Value<DateTime>? time}) {
-    return TodosCompanion(
+      Value<int>? startTime,
+      Value<int>? endTime}) {
+    return SchedulesCompanion(
       id: id ?? this.id,
-      todo: todo ?? this.todo,
+      content: content ?? this.content,
       date: date ?? this.date,
-      time: time ?? this.time,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
     );
   }
 
@@ -139,35 +161,40 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (todo.present) {
-      map['todo'] = Variable<String>(todo.value);
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
     }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
-    if (time.present) {
-      map['time'] = Variable<DateTime>(time.value);
+    if (startTime.present) {
+      map['start_time'] = Variable<int>(startTime.value);
+    }
+    if (endTime.present) {
+      map['end_time'] = Variable<int>(endTime.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('TodosCompanion(')
+    return (StringBuffer('SchedulesCompanion(')
           ..write('id: $id, ')
-          ..write('todo: $todo, ')
+          ..write('content: $content, ')
           ..write('date: $date, ')
-          ..write('time: $time')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime')
           ..write(')'))
         .toString();
   }
 }
 
-class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
+class $SchedulesTable extends Schedules
+    with TableInfo<$SchedulesTable, Schedule> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TodosTable(this.attachedDatabase, [this._alias]);
+  $SchedulesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -175,40 +202,45 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _todoMeta = const VerificationMeta('todo');
+  final VerificationMeta _contentMeta = const VerificationMeta('content');
   @override
-  late final GeneratedColumn<String> todo = GeneratedColumn<String>(
-      'todo', aliasedName, false,
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  final VerificationMeta _timeMeta = const VerificationMeta('time');
+  final VerificationMeta _startTimeMeta = const VerificationMeta('startTime');
   @override
-  late final GeneratedColumn<DateTime> time = GeneratedColumn<DateTime>(
-      'time', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<int> startTime = GeneratedColumn<int>(
+      'start_time', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  final VerificationMeta _endTimeMeta = const VerificationMeta('endTime');
   @override
-  List<GeneratedColumn> get $columns => [id, todo, date, time];
+  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
+      'end_time', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  String get aliasedName => _alias ?? 'todos';
+  List<GeneratedColumn> get $columns => [id, content, date, startTime, endTime];
   @override
-  String get actualTableName => 'todos';
+  String get aliasedName => _alias ?? 'schedules';
   @override
-  VerificationContext validateIntegrity(Insertable<Todo> instance,
+  String get actualTableName => 'schedules';
+  @override
+  VerificationContext validateIntegrity(Insertable<Schedule> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('todo')) {
-      context.handle(
-          _todoMeta, todo.isAcceptableOrUnknown(data['todo']!, _todoMeta));
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
     } else if (isInserting) {
-      context.missing(_todoMeta);
+      context.missing(_contentMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -216,11 +248,17 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
-    if (data.containsKey('time')) {
-      context.handle(
-          _timeMeta, time.isAcceptableOrUnknown(data['time']!, _timeMeta));
+    if (data.containsKey('start_time')) {
+      context.handle(_startTimeMeta,
+          startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta));
     } else if (isInserting) {
-      context.missing(_timeMeta);
+      context.missing(_startTimeMeta);
+    }
+    if (data.containsKey('end_time')) {
+      context.handle(_endTimeMeta,
+          endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta));
+    } else if (isInserting) {
+      context.missing(_endTimeMeta);
     }
     return context;
   }
@@ -228,32 +266,34 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Todo map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Schedule map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Todo(
+    return Schedule(
       id: attachedDatabase.options.types
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      todo: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}todo'])!,
+      content: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
       date: attachedDatabase.options.types
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
-      time: attachedDatabase.options.types
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}time'])!,
+      startTime: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}start_time'])!,
+      endTime: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}end_time'])!,
     );
   }
 
   @override
-  $TodosTable createAlias(String alias) {
-    return $TodosTable(attachedDatabase, alias);
+  $SchedulesTable createAlias(String alias) {
+    return $SchedulesTable(attachedDatabase, alias);
   }
 }
 
 abstract class _$LocalDatabase extends GeneratedDatabase {
   _$LocalDatabase(QueryExecutor e) : super(e);
-  late final $TodosTable todos = $TodosTable(this);
+  late final $SchedulesTable schedules = $SchedulesTable(this);
   @override
   Iterable<TableInfo<Table, dynamic>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [todos];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [schedules];
 }
