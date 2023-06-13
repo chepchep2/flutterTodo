@@ -17,6 +17,7 @@ class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
   // select기능
   Stream<List<Schedule>> watchSchedules(DateTime date) =>
+      // 데이터를 조회하고 변화 감지
       // 테이블의 date 컬럼과 매개변수에 입력된 date 변수가 같은지 비교하기 위해 equals()함수 사용
       (select(schedules)..where((tbl) => tbl.date.equals(date))).watch();
 

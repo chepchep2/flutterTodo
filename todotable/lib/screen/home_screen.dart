@@ -68,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 8),
             StreamBuilder<List<Schedule>>(
               stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDate),
+              // 일정 stream으로 받아오기
               builder: (context, snapshot) {
                 return TodayBanner(
                   selectedDate: selectedDate,
@@ -79,16 +80,24 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: StreamBuilder<List<Schedule>>(
                 stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDate),
+                // GetIt으로 LocalDatabase 인스턴스롤 가져와서 watchSchedules함수 실행
+                // watchSchedules함수는 Stream을 반환한다. Streambuilder를 사용해서 일정 관련 데이터가 변경될 때마다
+                // 위젯들을 새로 렌더링 해준다.
+                // 매개변수로 selectedDate를 받아서 선택한 날짜의 일정만 따로 필터링해서 불러온다.
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
+                    // 데이터가 없을 때
+                    // 일정이 존재하지않으면 Container반환
                     return Container();
                   }
                   return ListView.builder(
+                    // 화면에 보이는 값들만 렌더링하는 리스트
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final Schedule = snapshot.data![index];
                       return Dismissible(
                         key: ObjectKey(Schedule.id),
+                        // 유니크한 키값
                         direction: DismissDirection.startToEnd,
                         onDismissed: (DismissDirection direction) {
                           GetIt.I<LocalDatabase>().removeSchedule(Schedule.id);

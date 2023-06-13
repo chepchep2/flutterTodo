@@ -38,7 +38,8 @@ class _MainListState extends State<MainList> {
 
   @override
   Widget build(BuildContext context) {
-    print("새로운 브랜치입니다.");
+    // print("새로운 브랜치입니다.");
+    print("데이터베이스 예제 공부중입니다.");
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       child: Column(

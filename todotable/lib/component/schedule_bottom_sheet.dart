@@ -98,14 +98,18 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
       formKey.currentState!.save();
 
       await GetIt.I<LocalDatabase>().createSchedule(
+        // GetIt을 통해 미리 생성해둔 LocalDatabase 인스턴스를 가져온 후 createSchedule함수 실행
         SchedulesCompanion(
           startTime: Value(startTime!),
           endTime: Value(endTime!),
           content: Value(content!),
           date: Value(widget.selectedDate),
+          // 매개변수에 꼭 SchedulesCompanio을 입력해줘야 하는데 SchedulesCompanion에는 실제 Schedules 테이블에
+          // 입력될 값들을 드리프트 패키지에서 제공하는 Value라는 클래스로 감싸서 입력해주면 된다.
         ),
       );
       Navigator.of(context).pop();
+      // 일정 생성 후 화면 뒤로 가기
     }
   }
 
