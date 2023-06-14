@@ -10,6 +10,7 @@ part 'drift_database.g.dart';
 @DriftDatabase(
   tables: [
     Todos,
+    // 사용할 테이블을 등록
   ],
 )
 class LocalDatabase extends _$LocalDatabase {
@@ -17,11 +18,14 @@ class LocalDatabase extends _$LocalDatabase {
 
   Stream<List<Todo>> watchTodos(DateTime date) =>
       (select(todos)..where((tbl) => tbl.date.equals(date))).watch();
+  // 내 투두리스트앱에서 무언가를 선택하는 기능이 필요할까 싶음?
 
-  Future<int> createTodo(TodosCompanion data) => into(todos).insert(data);
+  Future<int> createTodos(TodosCompanion data) => into(todos).insert(data);
+  // +버튼이나 키보드의 done/완료를 눌렀을 때 저장을 해야하니깐
 
   Future<int> removeTodos(int id) =>
       (delete(todos)..where((tbl) => tbl.id.equals(id))).go();
+  // 삭제 버튼을 눌렀을 때 삭제를 해야하니깐
 
   @override
   int get schemaVersion => 1;
