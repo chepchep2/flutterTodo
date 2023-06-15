@@ -37,6 +37,11 @@ class _MainListState extends State<MainList> {
       addedTimes.add(DateTime.now());
       _textController.clear();
     });
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+    }
+
+    print("chep");
   }
 
   DateTime todayDate = DateTime.now();
@@ -158,8 +163,10 @@ class _MainListState extends State<MainList> {
                       enabledBorder:
                           OutlineInputBorder(borderSide: BorderSide.none),
                     ),
-                    onSaved: onSaved,
-                    validator: validator,
+                    onSaved: (String? val) {
+                      todoList = val;
+                    },
+                    validator: toDoValidator,
                   ),
                 ),
               ],
@@ -169,5 +176,18 @@ class _MainListState extends State<MainList> {
         ),
       ),
     );
+  }
+
+  // void onSavePressed() {
+  //   if (formKey.currentState!.validate()) {
+  //     formKey.currentState!.save();
+  //   }
+  // }
+
+  String? toDoValidator(String? val) {
+    if (val == null) {
+      return "올바른 값을 입력하세요.";
+    }
+    return null;
   }
 }
