@@ -43,13 +43,13 @@ class _MainListState extends State<MainList> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       DateTime now = DateTime.now();
-      final companion = TodosCompanion(
-        name: Value(todoList!),
-        date: Value(now),
-        time: Value(now),
+
+      await GetIt.instance<LocalDatabase>().createTodos(
+        name: todoList!,
+        date: now,
+        time: now,
       );
-      await GetIt.instance<LocalDatabase>().createTodos(companion);
-      Navigator.of(context).pop();
+      // Navigator.of(context).pop();
     }
   }
 

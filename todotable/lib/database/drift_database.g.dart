@@ -175,7 +175,7 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _todoMeta = const VerificationMeta('name');
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
@@ -206,9 +206,9 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     }
     if (data.containsKey('name')) {
       context.handle(
-          _todoMeta, name.isAcceptableOrUnknown(data['name']!, _todoMeta));
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_todoMeta);
+      context.missing(_nameMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
