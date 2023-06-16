@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:todotable/database/drift_database.dart';
 
 class MainList extends StatefulWidget {
-  final DateTime? todayDate;
-  final int? count;
+  // final DateTime? todayDate;
+  // final int? count;
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
+
   const MainList({
-    @required this.todayDate,
-    @required this.count,
+    // @required this.todayDate,
+    // @required this.count,
     @required this.onSaved,
     @required this.validator,
     Key? key,
@@ -21,7 +24,7 @@ class MainList extends StatefulWidget {
 class _MainListState extends State<MainList> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  int? todoCount;
+  // int? todoCount;
   String? todoList;
 
   List<String> todos = [];
@@ -29,7 +32,7 @@ class _MainListState extends State<MainList> {
   List<DateTime> addedTimes = [];
   final _textController = TextEditingController();
 
-  void _handleSubmitted() {
+  void _handleSubmitted() async {
     setState(() {
       String newTodo = _textController.text;
       todos.add(newTodo);
@@ -39,9 +42,15 @@ class _MainListState extends State<MainList> {
     });
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
+      DateTime now = DateTime.now();
+      final companion = TodosCompanion(
+        name: Value(todoList!),
+        date: Value(now),
+        time: Value(now),
+      );
+      await GetIt.instance<LocalDatabase>().createTodos(companion);
+      Navigator.of(context).pop();
     }
-
-    print("chep");
   }
 
   DateTime todayDate = DateTime.now();

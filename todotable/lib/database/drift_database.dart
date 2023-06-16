@@ -1,6 +1,6 @@
 import 'package:todotable/model/todos.dart';
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
+import 'package:drift/native.dart' as drift_native;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
@@ -20,7 +20,18 @@ class LocalDatabase extends _$LocalDatabase {
       (select(todos)..where((tbl) => tbl.date.equals(date))).watch();
   // 내 투두리스트앱에서 무언가를 선택하는 기능이 필요할까 싶음?
 
-  Future<int> createTodos(TodosCompanion data) => into(todos).insert(data);
+  Future<int> createTodos({
+    required String name,
+    required DateTime date,
+    required DateTime time,
+  }) async {
+    final companion = TodosCompanion(
+      name: Value(name),
+      date: Value(date),
+      time: Value(time),
+    );
+    return await into(todos).insert(companion);
+  }
   // +버튼이나 키보드의 done/완료를 눌렀을 때 저장을 해야하니깐
 
   Future<int> removeTodos(int id) =>
@@ -29,12 +40,12 @@ class LocalDatabase extends _$LocalDatabase {
 
   @override
   int get schemaVersion => 1;
-}
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return NativeDatabase(file);
-  });
+  static LazyDatabase _openConnection() {
+    return LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, 'db.sqlite'));
+      return drift_native.NativeDatabase(file);
+    });
+  }
 }
