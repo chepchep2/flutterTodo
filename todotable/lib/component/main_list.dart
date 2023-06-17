@@ -57,6 +57,7 @@ class _MainListState extends State<MainList> {
 
   @override
   Widget build(BuildContext context) {
+    print("새로운 데이터베이스 브랜치입니다.");
     // print("새로운 브랜치입니다.");
     return Form(
       key: formKey,
