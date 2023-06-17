@@ -16,19 +16,16 @@ part 'drift_database.g.dart';
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
-  Stream<List<Todo>> watchTodos(DateTime date) =>
-      (select(todos)..where((tbl) => tbl.date.equals(date))).watch();
+  Stream<List<Todo>> watchTodos(DateTime createdAt) =>
+      (select(todos)..where((tbl) => tbl.createdAt.equals(createdAt))).watch();
   // 내 투두리스트앱에서 무언가를 선택하는 기능이 필요할까 싶음?
 
   Future<int> createTodos({
     required String name,
-    required DateTime date,
-    required DateTime time,
   }) async {
     final companion = TodosCompanion(
       name: Value(name),
-      date: Value(date),
-      time: Value(time),
+      createdAt: Value(DateTime.now()),
     );
     return await into(todos).insert(companion);
   }
@@ -37,6 +34,8 @@ class LocalDatabase extends _$LocalDatabase {
   Future<int> removeTodos(int id) =>
       (delete(todos)..where((tbl) => tbl.id.equals(id))).go();
   // 삭제 버튼을 눌렀을 때 삭제를 해야하니깐
+
+  Future<List<Todo>> getTodos() => select(todos).get();
 
   @override
   int get schemaVersion => 1;
