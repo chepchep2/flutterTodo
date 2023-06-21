@@ -63,6 +63,13 @@ class _MainListState extends State<MainList> {
     // print("textController: ${_textController.text}");
 
     // 1. formKey.currentState!.validate() 는 오류가 나는가? 안나는가?
+    // formKey를 설정?하는 Form위젯 안의 key: formKey 부분에서 formKey를 넣어주면
+    // currentState는 null이 아니다.
+    // 그러므로 formKey.currentState!는 오류가 나지않는다.
+    // (formKey라는 globalKey를 넣어줘서 null이 아니기때문에 null이 아니라고 가정할 수 있다.)
+    // The current state is null if (1) there is no widget in the tree that matches this global key
+    // 위젯에 전역키와 매치되는 것이 없다면 currentState는 null이다.
+
     // 2. 오류가 안난다면 왜 그런가?
     if (formKey.currentState!.validate()) {
       // print(formKey.currentState);
@@ -73,6 +80,7 @@ class _MainListState extends State<MainList> {
       // DateTime now = DateTime.now();
 
       // name 에 들어오는 값은 왜 null이 아니라고 가정할 수 있을까?
+      // createTodos 메서드에서 name 필수 호출 매개변수라서 null일 수가 없다. (required String name)
       await GetIt.instance<LocalDatabase>().createTodos(
         name: newTodoName!,
       );
@@ -253,6 +261,7 @@ void nullOperator() {
   print(a?.toString() is String);
   print("==a!");
   print(a!.toString());
+  // a는 이미 null이므로 null이 아니라고 가정하는게 안된다.
 
   // formKey.currentState?.validate();
   // formKey.currentState!.validate();
