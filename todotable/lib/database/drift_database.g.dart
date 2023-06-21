@@ -10,20 +10,27 @@ part of 'drift_database.dart';
 class Todo extends DataClass implements Insertable<Todo> {
   final int id;
   final String name;
-  final DateTime date;
-  final DateTime time;
+  final String? description;
+  final DateTime createdAt;
+  final DateTime? completedAt;
   const Todo(
       {required this.id,
       required this.name,
-      required this.date,
-      required this.time});
+      this.description,
+      required this.createdAt,
+      this.completedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['date'] = Variable<DateTime>(date);
-    map['time'] = Variable<DateTime>(time);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
     return map;
   }
 
@@ -31,8 +38,13 @@ class Todo extends DataClass implements Insertable<Todo> {
     return TodosCompanion(
       id: Value(id),
       name: Value(name),
-      date: Value(date),
-      time: Value(time),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: Value(createdAt),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
     );
   }
 
@@ -42,8 +54,9 @@ class Todo extends DataClass implements Insertable<Todo> {
     return Todo(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      date: serializer.fromJson<DateTime>(json['date']),
-      time: serializer.fromJson<DateTime>(json['time']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
     );
   }
   @override
@@ -52,84 +65,100 @@ class Todo extends DataClass implements Insertable<Todo> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'date': serializer.toJson<DateTime>(date),
-      'time': serializer.toJson<DateTime>(time),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
     };
   }
 
-  Todo copyWith({int? id, String? name, DateTime? date, DateTime? time}) =>
+  Todo copyWith(
+          {int? id,
+          String? name,
+          Value<String?> description = const Value.absent(),
+          DateTime? createdAt,
+          Value<DateTime?> completedAt = const Value.absent()}) =>
       Todo(
         id: id ?? this.id,
         name: name ?? this.name,
-        date: date ?? this.date,
-        time: time ?? this.time,
+        description: description.present ? description.value : this.description,
+        createdAt: createdAt ?? this.createdAt,
+        completedAt: completedAt.present ? completedAt.value : this.completedAt,
       );
   @override
   String toString() {
     return (StringBuffer('Todo(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('date: $date, ')
-          ..write('time: $time')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('completedAt: $completedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, date, time);
+  int get hashCode =>
+      Object.hash(id, name, description, createdAt, completedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Todo &&
           other.id == this.id &&
           other.name == this.name &&
-          other.date == this.date &&
-          other.time == this.time);
+          other.description == this.description &&
+          other.createdAt == this.createdAt &&
+          other.completedAt == this.completedAt);
 }
 
 class TodosCompanion extends UpdateCompanion<Todo> {
   final Value<int> id;
   final Value<String> name;
-  final Value<DateTime> date;
-  final Value<DateTime> time;
+  final Value<String?> description;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> completedAt;
   const TodosCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.date = const Value.absent(),
-    this.time = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
   });
   TodosCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required DateTime date,
-    required DateTime time,
+    this.description = const Value.absent(),
+    required DateTime createdAt,
+    this.completedAt = const Value.absent(),
   })  : name = Value(name),
-        date = Value(date),
-        time = Value(time);
+        createdAt = Value(createdAt);
   static Insertable<Todo> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<DateTime>? date,
-    Expression<DateTime>? time,
+    Expression<String>? description,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? completedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (date != null) 'date': date,
-      if (time != null) 'time': time,
+      if (description != null) 'description': description,
+      if (createdAt != null) 'created_at': createdAt,
+      if (completedAt != null) 'completed_at': completedAt,
     });
   }
 
   TodosCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
-      Value<DateTime>? date,
-      Value<DateTime>? time}) {
+      Value<String?>? description,
+      Value<DateTime>? createdAt,
+      Value<DateTime?>? completedAt}) {
     return TodosCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      date: date ?? this.date,
-      time: time ?? this.time,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      completedAt: completedAt ?? this.completedAt,
     );
   }
 
@@ -142,11 +171,14 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
     }
-    if (time.present) {
-      map['time'] = Variable<DateTime>(time.value);
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
     }
     return map;
   }
@@ -156,8 +188,9 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     return (StringBuffer('TodosCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('date: $date, ')
-          ..write('time: $time')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('completedAt: $completedAt')
           ..write(')'))
         .toString();
   }
@@ -180,18 +213,26 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  final VerificationMeta _dateMeta = const VerificationMeta('date');
+  final VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
   @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-      'date', aliasedName, false,
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  final VerificationMeta _timeMeta = const VerificationMeta('time');
+  final VerificationMeta _completedAtMeta =
+      const VerificationMeta('completedAt');
   @override
-  late final GeneratedColumn<DateTime> time = GeneratedColumn<DateTime>(
-      'time', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+      'completed_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, name, date, time];
+  List<GeneratedColumn> get $columns =>
+      [id, name, description, createdAt, completedAt];
   @override
   String get aliasedName => _alias ?? 'todos';
   @override
@@ -210,17 +251,23 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('date')) {
+    if (data.containsKey('description')) {
       context.handle(
-          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
-    } else if (isInserting) {
-      context.missing(_dateMeta);
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
     }
-    if (data.containsKey('time')) {
-      context.handle(
-          _timeMeta, time.isAcceptableOrUnknown(data['time']!, _timeMeta));
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     } else if (isInserting) {
-      context.missing(_timeMeta);
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+          _completedAtMeta,
+          completedAt.isAcceptableOrUnknown(
+              data['completed_at']!, _completedAtMeta));
     }
     return context;
   }
@@ -235,10 +282,12 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      date: attachedDatabase.options.types
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
-      time: attachedDatabase.options.types
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}time'])!,
+      description: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
+      createdAt: attachedDatabase.options.types
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      completedAt: attachedDatabase.options.types
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}completed_at']),
     );
   }
 

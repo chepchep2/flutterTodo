@@ -4,14 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:todotable/database/drift_database.dart';
 
 class MainList extends StatefulWidget {
-  // final DateTime? todayDate;
-  // final int? count;
   final FormFieldSetter<String>? onSaved;
   final FormFieldValidator<String>? validator;
 
   const MainList({
-    // @required this.todayDate,
-    // @required this.count,
     @required this.onSaved,
     @required this.validator,
     Key? key,
@@ -23,33 +19,33 @@ class MainList extends StatefulWidget {
 
 class _MainListState extends State<MainList> {
   final GlobalKey<FormState> formKey = GlobalKey();
-
+  final _textController = TextEditingController();
   // int? todoCount;
-  String? todoList;
+  // String? todoList;
+  String? newTodoName;
 
   List<String> todos = [];
   List<bool> checkedList = [];
   List<DateTime> addedTimes = [];
-  final _textController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final todoList = await GetIt.instance<LocalDatabase>().getTodos();
+      print(todoList);
+      print(todoList.length);
+    });
+  }
 
   void _handleSubmitted() async {
-    setState(() {
-      String newTodo = _textController.text;
-      todos.add(newTodo);
-      checkedList.add(false);
-      addedTimes.add(DateTime.now());
-      _textController.clear();
-    });
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      DateTime now = DateTime.now();
 
-      await GetIt.instance<LocalDatabase>().createTodos(
-        name: todoList!,
-        date: now,
-        time: now,
+      await GetIt.instance<LocalDatabase>().createdTodos(
+        name: newTodoName!,
       );
-      Navigator.of(context).pop();
     }
   }
 
@@ -160,7 +156,7 @@ class _MainListState extends State<MainList> {
               children: [
                 Container(
                   child: IconButton(
-                    onPressed: () => _handleSubmitted(),
+                    onPressed: _handleSubmitted,
                     icon: const Icon(Icons.add),
                   ),
                 ),
@@ -173,7 +169,7 @@ class _MainListState extends State<MainList> {
                           OutlineInputBorder(borderSide: BorderSide.none),
                     ),
                     onSaved: (String? val) {
-                      todoList = val;
+                      newTodoName = val;
                     },
                     validator: toDoValidator,
                   ),
