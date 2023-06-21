@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart';
 import 'package:todotable/database/drift_database.dart';
 
 class MainList extends StatefulWidget {
@@ -53,7 +52,6 @@ class _MainListState extends State<MainList> {
 
   @override
   Widget build(BuildContext context) {
-    // print("새로운 브랜치입니다.");
     return Form(
       key: formKey,
       child: Padding(
@@ -80,78 +78,161 @@ class _MainListState extends State<MainList> {
             ),
             const SizedBox(height: 30),
             Expanded(
-              child: ListView.builder(
-                itemCount: todos.length,
-                itemBuilder: (context, index) {
-                  final todo = todos[index];
-                  final addedTime = addedTimes[index];
-                  final formattedTime = DateFormat.Hm().format(addedTime);
-                  return Dismissible(
-                    key: Key(todo),
-                    onDismissed: (direction) {
-                      setState(() {
-                        todos.removeAt(index);
-                        checkedList.removeAt(index);
-                        addedTimes.removeAt(index);
-                      });
-                    },
-                    background: Container(
-                      color: Colors.red,
-                      child: const Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: StreamBuilder(
+                stream: GetIt.I<LocalDatabase>().watchTodos(todayDate),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  }
+
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final todo = snapshot.data![index].name;
+                      // final addedTime = snapshot.data![index].createdAt;
+                      // final formattedTime = DateFormat.Hm().format(addedTime);
+                      return Dismissible(
+                        key: Key(todo),
+                        onDismissed: (direction) {
+                          setState(() {
+                            todos.removeAt(index);
+                            checkedList.removeAt(index);
+                            addedTimes.removeAt(index);
+                          });
+                        },
+                        background: Container(
+                          color: Colors.red,
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Checkbox(
-                              fillColor:
-                                  const MaterialStatePropertyAll(Colors.black),
-                              value: checkedList[index],
-                              onChanged: (value) {
-                                setState(() {
-                                  checkedList[index] = value!;
-                                });
-                              },
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  todo,
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      decoration: checkedList[index]
-                                          ? TextDecoration.lineThrough
-                                          : TextDecoration.none),
+                                Checkbox(
+                                  fillColor: const MaterialStatePropertyAll(
+                                      Colors.black),
+                                  value: checkedList[index],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      checkedList[index] = value!;
+                                    });
+                                  },
                                 ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  todo,
-                                  style: const TextStyle(fontSize: 12),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      todo,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          decoration: checkedList[index]
+                                              ? TextDecoration.lineThrough
+                                              : TextDecoration.none),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      todo,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ],
                                 ),
+                                // Text(
+                                //   formattedTime,
+                                //   style: const TextStyle(
+                                //     fontSize: 12,
+                                //   ),
+                                // ),
                               ],
                             ),
-                            Text(
-                              formattedTime,
-                              style: const TextStyle(
-                                fontSize: 12,
-                              ),
-                            ),
+                            const SizedBox(height: 30),
                           ],
                         ),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 },
               ),
             ),
+            const SizedBox(height: 30),
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: todos.length,
+            //     itemBuilder: (context, index) {
+            //       final todo = todos[index];
+            //       final addedTime = addedTimes[index];
+            //       final formattedTime = DateFormat.Hm().format(addedTime);
+            //       return Dismissible(
+            //         key: Key(todo),
+            //         onDismissed: (direction) {
+            //           setState(() {
+            //             todos.removeAt(index);
+            //             checkedList.removeAt(index);
+            //             addedTimes.removeAt(index);
+            //           });
+            //         },
+            //         background: Container(
+            //           color: Colors.red,
+            //           child: const Icon(
+            //             Icons.delete,
+            //             color: Colors.white,
+            //           ),
+            //         ),
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: [
+            //             Row(
+            //               crossAxisAlignment: CrossAxisAlignment.end,
+            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //               children: [
+            //                 Checkbox(
+            //                   fillColor:
+            //                       const MaterialStatePropertyAll(Colors.black),
+            //                   value: checkedList[index],
+            //                   onChanged: (value) {
+            //                     setState(() {
+            //                       checkedList[index] = value!;
+            //                     });
+            //                   },
+            //                 ),
+            //                 Column(
+            //                   crossAxisAlignment: CrossAxisAlignment.start,
+            //                   children: [
+            //                     Text(
+            //                       todo,
+            //                       style: TextStyle(
+            //                           fontSize: 15,
+            //                           decoration: checkedList[index]
+            //                               ? TextDecoration.lineThrough
+            //                               : TextDecoration.none),
+            //                     ),
+            //                     const SizedBox(height: 5),
+            //                     Text(
+            //                       todo,
+            //                       style: const TextStyle(fontSize: 12),
+            //                     ),
+            //                   ],
+            //                 ),
+            //                 Text(
+            //                   formattedTime,
+            //                   style: const TextStyle(
+            //                     fontSize: 12,
+            //                   ),
+            //                 ),
+            //               ],
+            //             ),
+            //             const SizedBox(height: 30),
+            //           ],
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             Row(
               children: [
                 Container(
