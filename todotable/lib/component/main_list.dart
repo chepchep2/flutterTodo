@@ -32,7 +32,7 @@ class _MainListState extends State<MainList> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final todoList = await GetIt.instance<LocalDatabase>().getTodos();
+      final todoList = GetIt.instance<LocalDatabase>().getTodos();
       print(todoList);
       print(todoList.length);
     });
@@ -79,7 +79,7 @@ class _MainListState extends State<MainList> {
             const SizedBox(height: 30),
             Expanded(
               child: StreamBuilder(
-                stream: GetIt.I<LocalDatabase>().watchTodos(todayDate),
+                stream: GetIt.I<LocalDatabase>().getTodos(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Container();

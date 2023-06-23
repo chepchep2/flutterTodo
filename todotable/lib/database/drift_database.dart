@@ -33,7 +33,8 @@ class LocalDatabase extends _$LocalDatabase {
       (delete(todos)..where((tbl) => tbl.id.equals(id))).go();
   // 삭제 버튼을 눌렀을 때 삭제를 해야하니깐
 
-  Future<List<Todo>> getTodos() => select(todos).get();
+  // Future<List<Todo>> getTodos() => select(todos).get();
+  Stream<List<Todo>> getTodos() => select(todos).watch();
 
   @override
   int get schemaVersion => 1;
