@@ -23,15 +23,21 @@ class _MainListState extends State<MainList> {
   // String? todoList;
   String? newTodoName;
 
-  List<String> todos = [];
-  List<bool> checkedList = [];
-  List<DateTime> addedTimes = [];
+  // List<String> todos = [];
+  // List<bool> checkedList = [];
+  // final bool _isChecked = false;
+  // List<DateTime> addedTimes = [];
+  Stream<List<Todo>> todoListCount = const Stream.empty();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final todoList = GetIt.instance<LocalDatabase>().getTodos();
+      final todoCount = GetIt.instance<LocalDatabase>().getTodos();
+      setState(() {
+        todoListCount = todoCount;
+      });
       print(todoList);
       print(todoList.length);
     });
@@ -68,12 +74,24 @@ class _MainListState extends State<MainList> {
             const SizedBox(
               height: 30,
             ),
-            Text(
-              "오늘의 투두 ${todos.length}",
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-            ),
             const SizedBox(
               height: 10,
+            ),
+            StreamBuilder(
+              stream: todoListCount,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return const SizedBox();
+                }
+
+                final todoCount = snapshot.data!.length;
+
+                return Text(
+                  "오늘의 투두 $todoCount",
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w500),
+                );
+              },
             ),
             const SizedBox(height: 30),
             Expanded(
@@ -85,22 +103,24 @@ class _MainListState extends State<MainList> {
                   }
                   print("snapshot.data: ${snapshot.data}");
                   // print("chepchep");
-                  final List<Todo> todoList = snapshot.data!;
+                  final List<Todo> todoList1 = snapshot.data!;
+                  // final List<Todo> checkedList = snapshot.data!;
+                  const List<bool> checkedList = [];
 
                   return ListView.builder(
                     // itemCount: snapshot.data!.length,
-                    itemCount: todoList.length,
+                    itemCount: todoList1.length,
                     itemBuilder: (context, index) {
                       // final todo = snapshot.data![index].name;
-                      final todo = todoList[index].name;
+                      final todo = todoList1[index].name;
                       // final addedTime = snapshot.data![index].createdAt;
                       // final formattedTime = DateFormat.Hm().format(addedTime);
                       return Dismissible(
                         key: Key(todo),
                         onDismissed: (direction) {
                           setState(() {
-                            todoList.removeAt(index);
-                            // checkedList.removeAt(index);
+                            todoList1.removeAt(index);
+                            checkedList.removeAt(index);
                             // addedTimes.removeAt(index);
                           });
                         },
@@ -121,10 +141,10 @@ class _MainListState extends State<MainList> {
                                 // Checkbox(
                                 //   fillColor: const MaterialStatePropertyAll(
                                 //       Colors.black),
-                                //   // value: checkedList[index],
-                                //   onChanged: (value) {
+                                //   value: todoList1[index],
+                                //   onChanged: (todoList1) {
                                 //     setState(() {
-                                //       checkedList[index] = value!;
+                                //       checkedList[index] = todoList1!;
                                 //     });
                                 //   },
                                 // ),
