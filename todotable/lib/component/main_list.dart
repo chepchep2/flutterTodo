@@ -19,27 +19,27 @@ class MainList extends StatefulWidget {
 class _MainListState extends State<MainList> {
   final GlobalKey<FormState> formKey = GlobalKey();
   final _textController = TextEditingController();
-  // int? todoCount;
-  // String? todoList;
   String? newTodoName;
 
-  // List<String> todos = [];
-  // List<bool> checkedList = [];
-  // final bool _isChecked = false;
-  // List<DateTime> addedTimes = [];
+  List<bool> checkedList = [];
+
   Stream<List<Todo>> todoListCount = const Stream.empty();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final todoList = GetIt.instance<LocalDatabase>().getTodos();
       final todoCount = GetIt.instance<LocalDatabase>().getTodos();
       setState(() {
         todoListCount = todoCount;
       });
-      print(todoList);
-      print(todoList.length);
+
+      todoList.listen((event) {
+        setState(() {
+          checkedList = List<bool>.filled(event.length, false);
+        });
+      });
     });
   }
 
@@ -50,6 +50,8 @@ class _MainListState extends State<MainList> {
       await GetIt.instance<LocalDatabase>().createdTodos(
         name: newTodoName!,
       );
+
+      checkedList.add(false);
     }
   }
 
@@ -101,27 +103,22 @@ class _MainListState extends State<MainList> {
                   if (!snapshot.hasData) {
                     return Container();
                   }
-                  print("snapshot.data: ${snapshot.data}");
+                  // print("snapshot.data: ${snapshot.data}");
                   // print("chepchep");
                   final List<Todo> todoList1 = snapshot.data!;
-                  // final List<Todo> checkedList = snapshot.data!;
-                  const List<bool> checkedList = [];
+                  // const List<bool> checkedList = [];
+                  // print(todoList1.length);
 
                   return ListView.builder(
-                    // itemCount: snapshot.data!.length,
                     itemCount: todoList1.length,
                     itemBuilder: (context, index) {
-                      // final todo = snapshot.data![index].name;
                       final todo = todoList1[index].name;
-                      // final addedTime = snapshot.data![index].createdAt;
-                      // final formattedTime = DateFormat.Hm().format(addedTime);
                       return Dismissible(
                         key: Key(todo),
                         onDismissed: (direction) {
                           setState(() {
                             todoList1.removeAt(index);
                             checkedList.removeAt(index);
-                            // addedTimes.removeAt(index);
                           });
                         },
                         background: Container(
@@ -138,27 +135,29 @@ class _MainListState extends State<MainList> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Checkbox(
-                                //   fillColor: const MaterialStatePropertyAll(
-                                //       Colors.black),
-                                //   value: todoList1[index],
-                                //   onChanged: (todoList1) {
-                                //     setState(() {
-                                //       checkedList[index] = todoList1!;
-                                //     });
-                                //   },
-                                // ),
+                                Checkbox(
+                                  fillColor: const MaterialStatePropertyAll(
+                                      Colors.black),
+                                  value: checkedList[index],
+                                  onChanged: (value) {
+                                    setState(
+                                      () {
+                                        checkedList[index] = value ?? false;
+                                      },
+                                    );
+                                  },
+                                ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Text(
-                                    //   todo,
-                                    //   style: TextStyle(
-                                    //       fontSize: 15,
-                                    //       decoration: checkedList[index]
-                                    //           ? TextDecoration.lineThrough
-                                    //           : TextDecoration.none),
-                                    // ),
+                                    Text(
+                                      todo,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          decoration: checkedList[index]
+                                              ? TextDecoration.lineThrough
+                                              : TextDecoration.none),
+                                    ),
                                     const SizedBox(height: 5),
                                     Text(
                                       todo,
