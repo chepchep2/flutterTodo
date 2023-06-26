@@ -37,7 +37,12 @@ class _MainListState extends State<MainList> {
 
       todoList.listen((event) {
         setState(() {
-          checkedList = List<bool>.filled(event.length, false);
+          // checkedList = List<bool>.filled(event.length, false);
+          // checkedList 길이가 고정되어 있음
+          // filled() 생성자를 사용하면 모든 원소들이 false로 채워진 고정 길이 리스트가 생성된다.
+          checkedList = List.generate(event.length, (index) => false);
+          // 리스트의 길이를 가변으로 바꿔준다.
+          // List.generate()를 사용하여 원하는 길이로 초기화하고 모든 원소를 'false'로 설정할 수 있다.
         });
       });
     });
@@ -51,7 +56,10 @@ class _MainListState extends State<MainList> {
         name: newTodoName!,
       );
 
-      checkedList.add(false);
+      setState(() {
+        checkedList.add(false);
+      });
+      // checkedList.add(false);
     }
   }
 
@@ -114,11 +122,18 @@ class _MainListState extends State<MainList> {
                     itemBuilder: (context, index) {
                       final todo = todoList1[index].name;
                       return Dismissible(
-                        key: Key(todo),
-                        onDismissed: (direction) {
+                        key: Key(todoList1[index].id.toString()),
+                        // onDismissed: (direction) {
+                        //   // setState(() {
+                        //   //   todoList1.removeAt(index);
+                        //   //   todoList1.removeAt(index);
+                        //   // });
+                        // },
+                        onDismissed: (direction) async {
+                          await GetIt.instance<LocalDatabase>()
+                              .removeTodos(todoList1[index].id);
                           setState(() {
                             todoList1.removeAt(index);
-                            checkedList.removeAt(index);
                           });
                         },
                         background: Container(
@@ -183,79 +198,6 @@ class _MainListState extends State<MainList> {
               ),
             ),
             const SizedBox(height: 30),
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: todos.length,
-            //     itemBuilder: (context, index) {
-            //       final todo = todos[index];
-            //       final addedTime = addedTimes[index];
-            //       final formattedTime = DateFormat.Hm().format(addedTime);
-            //       return Dismissible(
-            //         key: Key(todo),
-            //         onDismissed: (direction) {
-            //           setState(() {
-            //             todos.removeAt(index);
-            //             checkedList.removeAt(index);
-            //             addedTimes.removeAt(index);
-            //           });
-            //         },
-            //         background: Container(
-            //           color: Colors.red,
-            //           child: const Icon(
-            //             Icons.delete,
-            //             color: Colors.white,
-            //           ),
-            //         ),
-            //         child: Column(
-            //           crossAxisAlignment: CrossAxisAlignment.start,
-            //           children: [
-            //             Row(
-            //               crossAxisAlignment: CrossAxisAlignment.end,
-            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //               children: [
-            //                 Checkbox(
-            //                   fillColor:
-            //                       const MaterialStatePropertyAll(Colors.black),
-            //                   value: checkedList[index],
-            //                   onChanged: (value) {
-            //                     setState(() {
-            //                       checkedList[index] = value!;
-            //                     });
-            //                   },
-            //                 ),
-            //                 Column(
-            //                   crossAxisAlignment: CrossAxisAlignment.start,
-            //                   children: [
-            //                     Text(
-            //                       todo,
-            //                       style: TextStyle(
-            //                           fontSize: 15,
-            //                           decoration: checkedList[index]
-            //                               ? TextDecoration.lineThrough
-            //                               : TextDecoration.none),
-            //                     ),
-            //                     const SizedBox(height: 5),
-            //                     Text(
-            //                       todo,
-            //                       style: const TextStyle(fontSize: 12),
-            //                     ),
-            //                   ],
-            //                 ),
-            //                 Text(
-            //                   formattedTime,
-            //                   style: const TextStyle(
-            //                     fontSize: 12,
-            //                   ),
-            //                 ),
-            //               ],
-            //             ),
-            //             const SizedBox(height: 30),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
             Row(
               children: [
                 Container(
@@ -286,12 +228,6 @@ class _MainListState extends State<MainList> {
       ),
     );
   }
-
-  // void onSavePressed() {
-  //   if (formKey.currentState!.validate()) {
-  //     formKey.currentState!.save();
-  //   }
-  // }
 
   String? toDoValidator(String? val) {
     if (val == null) {
