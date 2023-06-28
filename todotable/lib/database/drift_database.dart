@@ -36,6 +36,8 @@ class LocalDatabase extends _$LocalDatabase {
   // Future<List<Todo>> getTodos() => select(todos).get();
   Stream<List<Todo>> getTodos() => select(todos).watch();
 
+  // Future<bool> updatedCheck() =>
+
   @override
   int get schemaVersion => 1;
 
