@@ -36,6 +36,11 @@ class LocalDatabase extends _$LocalDatabase {
   // Future<List<Todo>> getTodos() => select(todos).get();
   Stream<List<Todo>> getTodos() => select(todos).watch();
 
+  Future<void> updateTodoCompletedAt(int todoId, DateTime? completedAt) async {
+    await (update(todos)..where((tbl) => tbl.id.equals(todoId)))
+        .write(TodosCompanion(completedAt: Value(completedAt)));
+  }
+
   @override
   int get schemaVersion => 1;
 
