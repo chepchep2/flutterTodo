@@ -5,12 +5,12 @@ import 'package:todotable/component/main_header.dart';
 import 'package:todotable/database/drift_database.dart';
 
 class MainList extends StatefulWidget {
-  final FormFieldSetter<String>? onSaved;
-  final FormFieldValidator<String>? validator;
+  // final FormFieldSetter<String>? onSaved;
+  // final FormFieldValidator<String>? validator;
 
   const MainList({
-    @required this.onSaved,
-    @required this.validator,
+    // @required this.onSaved,
+    // @required this.validator,
     Key? key,
   }) : super(key: key);
 
