@@ -1,43 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:todotable/database/drift_database.dart';
 
-class MainBottom extends StatefulWidget {
-  const MainBottom({super.key});
+class MainBottom extends StatelessWidget {
+  MainBottom({super.key});
 
-  @override
-  State<MainBottom> createState() => _MainBottomState();
-}
+  final GlobalKey<FormState> formKey = GlobalKey();
 
-class _MainBottomState extends State<MainBottom> {
+  String? newTodoName;
+
   final _textController = TextEditingController();
-  List todos = [];
-  String input = "";
+
   @override
   Widget build(BuildContext context) {
-    void _handleSubmitted(String text) {
-      // _textController.clear();
-      print(text);
+    void _handleSubmitted() async {
+      if (formKey.currentState!.validate()) {
+        formKey.currentState!.save();
+
+        await GetIt.instance<LocalDatabase>().createdTodos(
+          name: newTodoName!,
+        );
+      }
     }
 
-    return Container(
+    return Form(
+      key: formKey,
       child: Row(
-        children:
-            // <Widget> 있어도 되고 없어도 되는 것 같음 용도는??
-            [
+        children: [
           Container(
             child: IconButton(
-                onPressed: () => _handleSubmitted(_textController.text),
-                icon: const Icon(Icons.add)),
+              onPressed: _handleSubmitted,
+              icon: const Icon(Icons.add),
+            ),
           ),
           Expanded(
-            child: TextField(
+            child: TextFormField(
               controller: _textController,
-              onSubmitted: _handleSubmitted,
-              decoration:
-                  const InputDecoration.collapsed(hintText: "새로운 투두 추가하기"),
+              decoration: const InputDecoration(
+                hintText: "새로운 투두 추가하기",
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+              ),
+              onSaved: (String? val) {
+                newTodoName = val;
+              },
+              validator: toDoValidator,
             ),
           ),
         ],
       ),
     );
+  }
+
+  String? toDoValidator(String? val) {
+    if (val == null) {
+      return "올바른 값을 입력하세요.";
+    }
+    return null;
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:todotable/component/main_bottom.dart';
 import 'package:todotable/component/main_header.dart';
 import 'package:todotable/database/drift_database.dart';
 
@@ -137,31 +138,31 @@ class _MainListState extends State<MainList> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  Row(
-                    children: [
-                      Container(
-                        child: IconButton(
-                          onPressed: _handleSubmitted,
-                          icon: const Icon(Icons.add),
-                        ),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _textController,
-                          decoration: const InputDecoration(
-                            hintText: "새로운 투두 추가하기",
-                            enabledBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                          ),
-                          onSaved: (String? val) {
-                            newTodoName = val;
-                          },
-                          validator: toDoValidator,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
+                  MainBottom()
+                  // Row(
+                  //   children: [
+                  //     Container(
+                  //       child: IconButton(
+                  //         onPressed: _handleSubmitted,
+                  //         icon: const Icon(Icons.add),
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: TextFormField(
+                  //         controller: _textController,
+                  //         decoration: const InputDecoration(
+                  //           hintText: "새로운 투두 추가하기",
+                  //           enabledBorder:
+                  //               OutlineInputBorder(borderSide: BorderSide.none),
+                  //         ),
+                  //         onSaved: (String? val) {
+                  //           newTodoName = val;
+                  //         },
+                  //         validator: toDoValidator,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               );
             }),
